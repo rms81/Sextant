@@ -14,7 +14,7 @@ namespace Sextant
     /// </summary>
     /// <seealso cref="ViewStackServiceBase" />
     /// <seealso cref="IViewStackService" />
-    public sealed class ParameterViewStackService : ViewStackServiceBase, IParameterViewStackService
+    public class ParameterViewStackService : ViewStackServiceBase, IParameterViewStackService
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ParameterViewStackService"/> class.
