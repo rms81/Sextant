@@ -6,11 +6,13 @@ Environment.SetVariableNames();
 var packageWhitelist = new[] 
 { 
     MakeAbsolute(File("./src/Sextant/Sextant.csproj")),
+    MakeAbsolute(File("./src/Sextant.Plugins.Popup/Sextant.Plugins.Popup.csproj")),
     MakeAbsolute(File("./src/Sextant.XamForms/Sextant.XamForms.csproj")),
 };
 
 var packageTestWhitelist = new[]
 {
+    MakeAbsolute(File("./src/Sextant.Plugins.Popup.Tests/Sextant.Plugins.Popup.Tests.csproj")),
     MakeAbsolute(File("./src/Sextant.Tests/Sextant.Tests.csproj")),
     MakeAbsolute(File("./src/Sextant.XamForms.Tests/Sextant.XamForms.Tests.csproj")),
 };
