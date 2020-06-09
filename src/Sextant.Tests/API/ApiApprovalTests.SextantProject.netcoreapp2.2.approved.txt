@@ -100,7 +100,7 @@ namespace Sextant
     {
         public NavigationParameter() { }
     }
-    public sealed class ParameterViewStackService : Sextant.ViewStackServiceBase, Sextant.IParameterViewStackService, Sextant.IViewStackService
+    public class ParameterViewStackService : Sextant.ViewStackServiceBase, Sextant.IParameterViewStackService, Sextant.IViewStackService
     {
         public ParameterViewStackService(Sextant.IView view) { }
         public ParameterViewStackService(Sextant.IView view, Sextant.IViewModelFactory viewModelFactory) { }
