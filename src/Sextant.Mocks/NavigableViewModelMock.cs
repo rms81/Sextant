@@ -26,7 +26,7 @@ namespace Sextant.Mocks
         /// <param name="id">The id of the page.</param>
         public NavigableViewModelMock(string? id = null)
         {
-            _id = id;
+            _id = id ?? string.Empty;
             _navigatedTo = new Subject<Unit>();
             _navigatedFrom = new Subject<Unit>();
             _navigatingTo = new Subject<Unit>();
