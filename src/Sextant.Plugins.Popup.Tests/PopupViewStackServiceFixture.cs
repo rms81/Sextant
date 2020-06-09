@@ -9,7 +9,9 @@ using NSubstitute;
 using ReactiveUI;
 using ReactiveUI.Testing;
 using Rg.Plugins.Popup.Contracts;
+using Rg.Plugins.Popup.Pages;
 using Sextant.Abstractions;
+using Sextant.Mocks;
 
 namespace Sextant.Plugins.Popup.Tests
 {
@@ -23,9 +25,15 @@ namespace Sextant.Plugins.Popup.Tests
         public PopupViewStackServiceFixture()
         {
             _view = Substitute.For<IView>();
+            _popupNavigation = Substitute.For<IPopupNavigation>();
+            _viewLocator = Substitute.For<IViewLocator>();
+            _viewModelFactory = Substitute.For<IViewModelFactory>();
+
             _view.PushPage(Arg.Any<INavigable>(), Arg.Any<string>(), Arg.Any<bool>(), Arg.Any<bool>())
                 .Returns(Observable.Return(Unit.Default));
             _view.PopPage().Returns(Observable.Return(Unit.Default));
+
+            _viewLocator.ResolveView(Arg.Any<IViewModel>()).Returns(new PopupMock());
         }
 
         public static implicit operator PopupViewStackService(PopupViewStackServiceFixture fixture) =>
@@ -33,6 +41,9 @@ namespace Sextant.Plugins.Popup.Tests
 
         public PopupViewStackServiceFixture WithNavigation(IPopupNavigation popupNavigation) =>
             this.With(ref _popupNavigation, popupNavigation);
+
+        public PopupViewStackServiceFixture WithViewModelFactory(IViewModelFactory factory) =>
+            this.With(ref _viewModelFactory, factory);
 
         private PopupViewStackService Build() =>
             new PopupViewStackService(_view, _popupNavigation, _viewLocator, _viewModelFactory);
