@@ -7,9 +7,11 @@ using System;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
+using ReactiveUI;
 using Rg.Plugins.Popup.Contracts;
 using Rg.Plugins.Popup.Events;
 using Rg.Plugins.Popup.Pages;
+using Sextant.Abstractions;
 using Sextant.Mocks;
 using Shouldly;
 using Xunit;
@@ -147,6 +149,43 @@ namespace Sextant.Plugins.Popup.Tests
                 // Then
                 await navigation.Received(1).PushAsync(Arg.Any<PopupPage>()).ConfigureAwait(false);
             }
+
+            /// <summary>
+            /// Tests the method calls the view model factory.
+            /// </summary>
+            /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+            [Fact]
+            public async Task Should_Call_View_Model_Factory()
+            {
+                // Given
+                var viewModelFactory = Substitute.For<IViewModelFactory>();
+                PopupViewStackService sut = new PopupViewStackServiceFixture().WithViewModelFactory(viewModelFactory);
+
+                // When
+                await sut.PushPopup<NavigableViewModelMock>();
+
+                // Then
+                viewModelFactory.Received(1).Create<NavigableViewModelMock>();
+            }
+
+            /// <summary>
+            /// Tests the method calls the view locator.
+            /// </summary>
+            /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+            [Fact]
+            public async Task Should_Call_View_Locator()
+            {
+                // Given
+                var viewLocator = Substitute.For<IViewLocator>();
+                viewLocator.ResolveView(Arg.Any<IViewModel>()).Returns(new PopupMock());
+                PopupViewStackService sut = new PopupViewStackServiceFixture().WithViewLocator(viewLocator);
+
+                // When
+                await sut.PushPopup<NavigableViewModelMock>();
+
+                // Then
+                viewLocator.Received(1).ResolveView(Arg.Any<IViewModel>());
+            }
         }
 
         /// <summary>
@@ -171,6 +210,26 @@ namespace Sextant.Plugins.Popup.Tests
 
                 // Then
                 await navigation.Received(1).PushAsync(Arg.Any<PopupPage>()).ConfigureAwait(false);
+            }
+
+            /// <summary>
+            /// Tests the method calls the view locator.
+            /// </summary>
+            /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+            [Fact]
+            public async Task Should_Call_View_Locator()
+            {
+                // Given
+                var viewModel = new NavigableViewModelMock();
+                var viewLocator = Substitute.For<IViewLocator>();
+                viewLocator.ResolveView(Arg.Any<IViewModel>()).Returns(new PopupMock());
+                PopupViewStackService sut = new PopupViewStackServiceFixture().WithViewLocator(viewLocator);
+
+                // When
+                await sut.PushPopup(viewModel);
+
+                // Then
+                viewLocator.Received(1).ResolveView(Arg.Any<IViewModel>());
             }
         }
 

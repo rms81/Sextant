@@ -48,7 +48,8 @@ namespace Sextant.Plugins.Popup
                     return Handler;
                 },
                 x => _popupNavigation.Pushing += x,
-                x => _popupNavigation.Pushing -= x);
+                x => _popupNavigation.Pushing -= x)
+                .Select(x => new PopupNavigationEvent(x.Page, x.IsAnimated));
 
             Pushed = Observable.FromEvent<EventHandler<PopupNavigationEventArgs>, PopupNavigationEventArgs>(
                 eventHandler =>
@@ -59,7 +60,8 @@ namespace Sextant.Plugins.Popup
                     return Handler;
                 },
                 x => _popupNavigation.Pushed += x,
-                x => _popupNavigation.Pushed -= x);
+                x => _popupNavigation.Pushed -= x)
+                .Select(x => new PopupNavigationEvent(x.Page, x.IsAnimated));
 
             Popping = Observable.FromEvent<EventHandler<PopupNavigationEventArgs>, PopupNavigationEventArgs>(
                 eventHandler =>
@@ -70,7 +72,8 @@ namespace Sextant.Plugins.Popup
                     return Handler;
                 },
                 x => _popupNavigation.Popping += x,
-                x => _popupNavigation.Popping -= x);
+                x => _popupNavigation.Popping -= x)
+                .Select(x => new PopupNavigationEvent(x.Page, x.IsAnimated));
 
             Popped = Observable.FromEvent<EventHandler<PopupNavigationEventArgs>, PopupNavigationEventArgs>(
                 eventHandler =>
@@ -81,20 +84,21 @@ namespace Sextant.Plugins.Popup
                     return Handler;
                 },
                 x => _popupNavigation.Popped += x,
-                x => _popupNavigation.Popped -= x);
+                x => _popupNavigation.Popped -= x)
+                .Select(x => new PopupNavigationEvent(x.Page, x.IsAnimated));
         }
 
         /// <inheritdoc/>
-        public IObservable<PopupNavigationEventArgs> Pushing { get; }
+        public IObservable<PopupNavigationEvent> Pushing { get; }
 
         /// <inheritdoc/>
-        public IObservable<PopupNavigationEventArgs> Pushed { get; }
+        public IObservable<PopupNavigationEvent> Pushed { get; }
 
         /// <inheritdoc/>
-        public IObservable<PopupNavigationEventArgs> Popping { get; }
+        public IObservable<PopupNavigationEvent> Popping { get; }
 
         /// <inheritdoc/>
-        public IObservable<PopupNavigationEventArgs> Popped { get; }
+        public IObservable<PopupNavigationEvent> Popped { get; }
 
         /// <inheritdoc/>
         public IReadOnlyList<IViewModel> PopupStack { get; }

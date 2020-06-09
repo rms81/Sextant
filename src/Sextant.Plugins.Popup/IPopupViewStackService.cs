@@ -21,22 +21,22 @@ namespace Sextant.Plugins.Popup
         /// <summary>
         /// Gets an observable sequence of pushing events.
         /// </summary>
-        IObservable<PopupNavigationEventArgs> Pushing { get; }
+        IObservable<PopupNavigationEvent> Pushing { get; }
 
         /// <summary>
         /// Gets an observable sequence of pushed events.
         /// </summary>
-        IObservable<PopupNavigationEventArgs> Pushed { get; }
+        IObservable<PopupNavigationEvent> Pushed { get; }
 
         /// <summary>
         /// Gets an observable sequence of popping events.
         /// </summary>
-        IObservable<PopupNavigationEventArgs> Popping { get; }
+        IObservable<PopupNavigationEvent> Popping { get; }
 
         /// <summary>
         /// Gets an observable sequence of popped events.
         /// </summary>
-        IObservable<PopupNavigationEventArgs> Popped { get; }
+        IObservable<PopupNavigationEvent> Popped { get; }
 
         /// <summary>
         /// Gets the popup stack.

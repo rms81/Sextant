@@ -42,6 +42,12 @@ namespace Sextant.Plugins.Popup.Tests
         public PopupViewStackServiceFixture WithNavigation(IPopupNavigation popupNavigation) =>
             this.With(ref _popupNavigation, popupNavigation);
 
+        public PopupViewStackServiceFixture WithViewModelFactory(IViewModelFactory viewModelFactory) =>
+            this.With(ref _viewModelFactory, viewModelFactory);
+
+        public PopupViewStackServiceFixture WithViewLocator(IViewLocator viewLocator) =>
+            this.With(ref _viewLocator, viewLocator);
+
         private PopupViewStackService Build() =>
             new PopupViewStackService(_view, _popupNavigation, _viewLocator, _viewModelFactory);
     }
