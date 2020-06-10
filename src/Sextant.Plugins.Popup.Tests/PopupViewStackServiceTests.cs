@@ -35,17 +35,21 @@ namespace Sextant.Plugins.Popup.Tests
             public void Should_Observe_Pushing()
             {
                 // Given
-                PopupNavigationEventArgs pushing = null;
+                PopupNavigationEvent pushing = null;
+                var viewModel = new NavigableViewModelMock();
+                var popup = new PopupMock
+                {
+                    ViewModel = viewModel
+                };
                 var navigation = Substitute.For<IPopupNavigation>();
                 PopupViewStackService sut = new PopupViewStackServiceFixture().WithNavigation(navigation);
                 sut.Pushing.Subscribe(x => pushing = x);
 
                 // When
-                PopupMock popupMock = new PopupMock();
-                navigation.Pushing += Raise.EventWith(new PopupNavigationEventArgs(popupMock, true));
+                navigation.Pushing += Raise.EventWith(new PopupNavigationEventArgs(popup, true));
 
                 // Then
-                pushing.Page.ShouldBe(popupMock);
+                pushing.ViewModel.ShouldBe(viewModel);
             }
         }
 
@@ -57,21 +61,29 @@ namespace Sextant.Plugins.Popup.Tests
             /// <summary>
             /// Tests the observer can respond to events.
             /// </summary>
+            /// <returns>A completion notification.</returns>
             [Fact]
-            public void Should_Observe_Pushed()
+            public async Task Should_Observe_Pushed()
             {
                 // Given
-                PopupNavigationEventArgs pushing = null;
+                PopupNavigationEvent pushing = null;
+                var viewModel = new NavigableViewModelMock();
+                var popup = new PopupMock
+                {
+                    ViewModel = viewModel
+                };
                 var navigation = Substitute.For<IPopupNavigation>();
-                PopupViewStackService sut = new PopupViewStackServiceFixture().WithNavigation(navigation);
+                var viewLocator = Substitute.For<IViewLocator>();
+                viewLocator.ResolveView(Arg.Any<IViewModel>()).Returns(popup);
+                PopupViewStackService sut = new PopupViewStackServiceFixture().WithNavigation(navigation).WithViewLocator(viewLocator);
                 sut.Pushed.Subscribe(x => pushing = x);
 
                 // When
-                PopupMock popupMock = new PopupMock();
-                navigation.Pushed += Raise.EventWith(new PopupNavigationEventArgs(popupMock, true));
+                await sut.PushPopup(viewModel);
+                navigation.Pushed += Raise.EventWith(new PopupNavigationEventArgs(popup, true));
 
                 // Then
-                pushing.Page.ShouldBe(popupMock);
+                pushing.ViewModel.ShouldBe(viewModel);
             }
         }
 
@@ -87,17 +99,21 @@ namespace Sextant.Plugins.Popup.Tests
             public void Should_Observe_Pushing()
             {
                 // Given
-                PopupNavigationEventArgs pushing = null;
+                PopupNavigationEvent pushing = null;
+                var viewModel = new NavigableViewModelMock();
+                var popup = new PopupMock
+                {
+                    ViewModel = viewModel
+                };
                 var navigation = Substitute.For<IPopupNavigation>();
                 PopupViewStackService sut = new PopupViewStackServiceFixture().WithNavigation(navigation);
                 sut.Popping.Subscribe(x => pushing = x);
 
                 // When
-                PopupMock popupMock = new PopupMock();
-                navigation.Popping += Raise.EventWith(new PopupNavigationEventArgs(popupMock, true));
+                navigation.Popping += Raise.EventWith(new PopupNavigationEventArgs(popup, true));
 
                 // Then
-                pushing.Page.ShouldBe(popupMock);
+                pushing.ViewModel.ShouldBe(viewModel);
             }
         }
 
@@ -113,17 +129,21 @@ namespace Sextant.Plugins.Popup.Tests
             public void Should_Observe_Popped()
             {
                 // Given
-                PopupNavigationEventArgs pushing = null;
+                PopupNavigationEvent pushing = null;
+                var viewModel = new NavigableViewModelMock();
+                var popup = new PopupMock
+                {
+                    ViewModel = viewModel
+                };
                 var navigation = Substitute.For<IPopupNavigation>();
                 PopupViewStackService sut = new PopupViewStackServiceFixture().WithNavigation(navigation);
                 sut.Popped.Subscribe(x => pushing = x);
 
                 // When
-                PopupMock popupMock = new PopupMock();
-                navigation.Popped += Raise.EventWith(new PopupNavigationEventArgs(popupMock, true));
+                navigation.Popped += Raise.EventWith(new PopupNavigationEventArgs(popup, true));
 
                 // Then
-                pushing.Page.ShouldBe(popupMock);
+                pushing.ViewModel.ShouldBe(viewModel);
             }
         }
 

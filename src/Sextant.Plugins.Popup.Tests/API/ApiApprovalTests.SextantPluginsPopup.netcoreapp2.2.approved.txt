@@ -3,11 +3,11 @@ namespace Sextant.Plugins.Popup
 {
     public interface IPopupViewStackService
     {
-        System.IObservable<Rg.Plugins.Popup.Events.PopupNavigationEventArgs> Popped { get; }
-        System.IObservable<Rg.Plugins.Popup.Events.PopupNavigationEventArgs> Popping { get; }
+        System.IObservable<Sextant.Plugins.Popup.PopupNavigationEvent> Popped { get; }
+        System.IObservable<Sextant.Plugins.Popup.PopupNavigationEvent> Popping { get; }
         System.Collections.Generic.IReadOnlyList<Sextant.IViewModel> PopupStack { get; }
-        System.IObservable<Rg.Plugins.Popup.Events.PopupNavigationEventArgs> Pushed { get; }
-        System.IObservable<Rg.Plugins.Popup.Events.PopupNavigationEventArgs> Pushing { get; }
+        System.IObservable<Sextant.Plugins.Popup.PopupNavigationEvent> Pushed { get; }
+        System.IObservable<Sextant.Plugins.Popup.PopupNavigationEvent> Pushing { get; }
         System.IObservable<System.Reactive.Unit> PopAllPopups(bool animate = true);
         System.IObservable<System.Reactive.Unit> PopPopup(bool animate = true);
         System.IObservable<System.Reactive.Unit> PushPopup(Sextant.IViewModel viewModel, string? contract = null, bool animate = true);
@@ -15,14 +15,20 @@ namespace Sextant.Plugins.Popup
             where TViewModel : Sextant.IViewModel;
         System.IObservable<System.Reactive.Unit> RemovePopup(Sextant.IViewModel viewModel, bool animate = true);
     }
+    public class PopupNavigationEvent
+    {
+        public PopupNavigationEvent(Rg.Plugins.Popup.Pages.PopupPage page, bool isAnimated) { }
+        public bool IsAnimated { get; }
+        public Sextant.IViewModel ViewModel { get; }
+    }
     public class PopupViewStackService : Sextant.ParameterViewStackService, Sextant.Plugins.Popup.IPopupViewStackService
     {
         public PopupViewStackService(Sextant.IView view, Rg.Plugins.Popup.Contracts.IPopupNavigation popupNavigation, ReactiveUI.IViewLocator viewLocator, Sextant.Abstractions.IViewModelFactory viewModelFactory) { }
-        public System.IObservable<Rg.Plugins.Popup.Events.PopupNavigationEventArgs> Popped { get; }
-        public System.IObservable<Rg.Plugins.Popup.Events.PopupNavigationEventArgs> Popping { get; }
+        public System.IObservable<Sextant.Plugins.Popup.PopupNavigationEvent> Popped { get; }
+        public System.IObservable<Sextant.Plugins.Popup.PopupNavigationEvent> Popping { get; }
         public System.Collections.Generic.IReadOnlyList<Sextant.IViewModel> PopupStack { get; }
-        public System.IObservable<Rg.Plugins.Popup.Events.PopupNavigationEventArgs> Pushed { get; }
-        public System.IObservable<Rg.Plugins.Popup.Events.PopupNavigationEventArgs> Pushing { get; }
+        public System.IObservable<Sextant.Plugins.Popup.PopupNavigationEvent> Pushed { get; }
+        public System.IObservable<Sextant.Plugins.Popup.PopupNavigationEvent> Pushing { get; }
         public System.IObservable<System.Reactive.Unit> PopAllPopups(bool animate = true) { }
         public System.IObservable<System.Reactive.Unit> PopPopup(bool animate = true) { }
         public System.IObservable<System.Reactive.Unit> PushPopup(Sextant.IViewModel viewModel, string? contract = null, bool animate = true) { }
