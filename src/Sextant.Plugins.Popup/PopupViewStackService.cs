@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace Sextant.Plugins.Popup
     /// <summary>
     /// Represents a popup view stack service implementation.
     /// </summary>
-    public class PopupViewStackService : ParameterViewStackService, IPopupViewStackService
+    public class PopupViewStackService : ParameterViewStackServiceBase, IPopupViewStackService
     {
         private readonly IPopupNavigation _popupNavigation;
         private readonly IViewLocator _viewLocator;
@@ -78,8 +79,7 @@ namespace Sextant.Plugins.Popup
             Popped = Observable.FromEvent<EventHandler<PopupNavigationEventArgs>, PopupNavigationEventArgs>(
                 eventHandler =>
                 {
-                    void Handler(object sender, PopupNavigationEventArgs args)
-                        => eventHandler(args);
+                    void Handler(object sender, PopupNavigationEventArgs args) => eventHandler(args);
 
                     return Handler;
                 },
@@ -101,7 +101,11 @@ namespace Sextant.Plugins.Popup
         public IObservable<PopupNavigationEvent> Popped { get; }
 
         /// <inheritdoc/>
-        public IReadOnlyList<IViewModel> PopupStack { get; }
+        public IReadOnlyList<IViewModel> PopupStack =>
+            _popupNavigation
+                .PopupStack
+                .Select(x => (IViewModel)((IViewFor)x).ViewModel)
+                .ToList();
 
         /// <inheritdoc/>
         public IObservable<Unit> PushPopup(IViewModel viewModel, string? contract = null, bool animate = true)

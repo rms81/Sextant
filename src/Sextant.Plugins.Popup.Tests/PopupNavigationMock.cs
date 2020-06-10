@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DynamicData;
 using Rg.Plugins.Popup.Contracts;
 using Rg.Plugins.Popup.Events;
 using Rg.Plugins.Popup.Pages;
@@ -43,7 +42,7 @@ namespace Sextant.Plugins.Popup.Tests
         public event EventHandler<PopupNavigationEventArgs> Popped;
 
         /// <inheritdoc/>
-        public IReadOnlyList<PopupPage> PopupStack => _stack.ToArray();
+        public IReadOnlyList<PopupPage> PopupStack => _stack.ToList();
 
         /// <inheritdoc/>
         public Task PushAsync(PopupPage page, bool animate = true)
@@ -66,18 +65,15 @@ namespace Sextant.Plugins.Popup.Tests
         /// <inheritdoc/>
         public Task PopAllAsync(bool animate = true)
         {
-            Popping?.Invoke(this, new PopupNavigationEventArgs(_stack.Peek(), animate));
-            var poppedPage = _stack.ToArray().First();
             _stack.Clear();
-            Popped?.Invoke(this, new PopupNavigationEventArgs(poppedPage, animate));
             return Task.CompletedTask;
         }
 
         /// <inheritdoc/>
         public Task RemovePageAsync(PopupPage page, bool animate = true)
         {
-            var remove = _stack.ToArray()[EnumerableExtensions.IndexOf(_stack.ToArray(), page)];
-            _stack.ToArray().ToList().Remove(remove);
+            var remove = _stack.ToList()[EnumerableExtensions.IndexOf(_stack.ToList(), page)];
+            _stack.ToList().Remove(remove);
             return Task.CompletedTask;
         }
     }

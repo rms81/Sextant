@@ -1,33 +1,25 @@
-﻿// Copyright (c) 2019 .NET Foundation and Contributors. All rights reserved.
+// Copyright (c) 2019 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
+using System.Reactive;
+using System.Reactive.Linq;
+
 namespace Sextant
 {
     /// <summary>
-    /// <see cref="IViewStackService"/> implementation that passes <see cref="INavigationParameter"/> when navigating.
+    /// Abstract base class for view stack services.
     /// </summary>
-    /// <seealso cref="ViewStackServiceBase" />
-    /// <seealso cref="IViewStackService" />
-    public sealed class ParameterViewStackService : ParameterViewStackServiceBase
+    public class ParameterViewStackServiceBase : ViewStackServiceBase, IParameterViewStackService
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ParameterViewStackService"/> class.
+        /// Initializes a new instance of the <see cref="ParameterViewStackServiceBase"/> class.
         /// </summary>
         /// <param name="view">The view.</param>
-        public ParameterViewStackService(IView view)
-            : this(view, null!)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ParameterViewStackService"/> class.
-        /// </summary>
-        /// <param name="view">The view.</param>
-        /// <param name="viewModelFactory">The view model factory.</param>
-        public ParameterViewStackService(IView view, IViewModelFactory viewModelFactory)
-            : base(view, viewModelFactory)
+        protected ParameterViewStackServiceBase(IView view)
+            : base(view)
         {
         }
 
@@ -107,7 +99,7 @@ namespace Sextant
         public IObservable<Unit> PushPage<TViewModel>(INavigationParameter parameter, string? contract = null, bool resetStack = false, bool animate = true)
             where TViewModel : INavigable
         {
-            TViewModel viewModel = Factory.Create<TViewModel>(contract);
+            var viewModel = ViewModelFactory.Current.Create<TViewModel>();
             return PushPage(viewModel, parameter, contract, resetStack, animate);
         }
 
@@ -115,7 +107,7 @@ namespace Sextant
         public IObservable<Unit> PushModal<TViewModel>(INavigationParameter parameter, string? contract = null, bool withNavigationPage = true)
             where TViewModel : INavigable
         {
-            TViewModel viewModel = Factory.Create<TViewModel>(contract);
+            var viewModel = ViewModelFactory.Current.Create<TViewModel>();
             return PushModal(viewModel, parameter, contract, withNavigationPage);
         }
 
@@ -133,12 +125,12 @@ namespace Sextant
                 .Do(_ =>
                 {
                     poppedPage
-                            .InvokeViewModelAction<INavigable>(x =>
-                                x.WhenNavigatedFrom(parameter)
-                                    .ObserveOn(View.MainThreadScheduler)
-                                    .Subscribe(navigatedFrom =>
-                                        Logger.Debug($"Called `WhenNavigatedFrom` on '{poppedPage.Id}' passing parameter {parameter}")))
-                            .InvokeViewModelAction<IDestructible>(x => x.Destroy());
+                        .InvokeViewModelAction<INavigable>(x =>
+                            x.WhenNavigatedFrom(parameter)
+                                .ObserveOn(View.MainThreadScheduler)
+                                .Subscribe(navigatedFrom =>
+                                    Logger.Debug($"Called `WhenNavigatedFrom` on '{poppedPage.Id}' passing parameter {parameter}")))
+                        .InvokeViewModelAction<IDestructible>(x => x.Destroy());
 
                     IViewModel topPage = TopPage().FirstOrDefaultAsync().Wait();
                     if (topPage is INavigated navigated)

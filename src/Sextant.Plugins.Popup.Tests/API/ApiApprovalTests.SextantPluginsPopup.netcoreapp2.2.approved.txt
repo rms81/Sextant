@@ -21,7 +21,7 @@ namespace Sextant.Plugins.Popup
         public bool IsAnimated { get; }
         public Sextant.IViewModel ViewModel { get; }
     }
-    public class PopupViewStackService : Sextant.ParameterViewStackService, Sextant.Plugins.Popup.IPopupViewStackService
+    public class PopupViewStackService : Sextant.ParameterViewStackServiceBase, Sextant.Plugins.Popup.IPopupViewStackService
     {
         public PopupViewStackService(Sextant.IView view, Rg.Plugins.Popup.Contracts.IPopupNavigation popupNavigation, ReactiveUI.IViewLocator viewLocator, Sextant.Abstractions.IViewModelFactory viewModelFactory) { }
         public System.IObservable<Sextant.Plugins.Popup.PopupNavigationEvent> Popped { get; }

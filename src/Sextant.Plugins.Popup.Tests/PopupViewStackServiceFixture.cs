@@ -29,10 +29,10 @@ namespace Sextant.Plugins.Popup.Tests
             _viewLocator = Substitute.For<IViewLocator>();
             _viewModelFactory = Substitute.For<IViewModelFactory>();
 
-            _view.PushPage(Arg.Any<INavigable>(), Arg.Any<string>(), Arg.Any<bool>(), Arg.Any<bool>())
+            _view
+                .PushPage(Arg.Any<INavigable>(), Arg.Any<string>(), Arg.Any<bool>(), Arg.Any<bool>())
                 .Returns(Observable.Return(Unit.Default));
             _view.PopPage().Returns(Observable.Return(Unit.Default));
-
             _viewLocator.ResolveView(Arg.Any<IViewModel>()).Returns(new PopupMock());
         }
 
