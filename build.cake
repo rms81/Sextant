@@ -12,8 +12,8 @@ var packageWhitelist = new[]
 
 var packageTestWhitelist = new[]
 {
-    MakeAbsolute(File("./src/Sextant.Plugins.Popup.Tests/Sextant.Plugins.Popup.Tests.csproj")),
     MakeAbsolute(File("./src/Sextant.Tests/Sextant.Tests.csproj")),
+    MakeAbsolute(File("./src/Sextant.Plugins.Popup.Tests/Sextant.Plugins.Popup.Tests.csproj")),
     MakeAbsolute(File("./src/Sextant.XamForms.Tests/Sextant.XamForms.Tests.csproj")),
 };
 
