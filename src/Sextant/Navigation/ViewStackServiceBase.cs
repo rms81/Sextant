@@ -206,6 +206,11 @@ namespace Sextant
 
             if (reset)
             {
+                foreach (var viewModel in stack)
+                {
+                    viewModel?.InvokeViewModelAction<IDestructible>(x => x.Destroy());
+                }
+
                 stack = new[] { item }.ToImmutableList();
             }
             else
