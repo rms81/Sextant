@@ -17,15 +17,16 @@ namespace Sextant.Mocks
     /// </summary>
     public class NavigationViewMock : IView, IDisposable
     {
-        private Subject<IViewModel> _pagePoppedSubject;
-        private Stack<IViewModel> _pageStack;
+        private readonly Subject<IViewModel> _pagePoppedSubject;
+        private readonly Stack<IViewModel> _pageStack;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NavigationViewMock"/> class.
         /// </summary>
-        public NavigationViewMock()
+        /// <param name="pagePoppedSubject">The page popped observable.</param>
+        public NavigationViewMock(Subject<IViewModel>? pagePoppedSubject = null)
         {
-            _pagePoppedSubject = new Subject<IViewModel>();
+            _pagePoppedSubject = pagePoppedSubject ?? new Subject<IViewModel>();
             _pageStack = new Stack<IViewModel>();
 
             PagePopped = _pagePoppedSubject.AsObservable();
