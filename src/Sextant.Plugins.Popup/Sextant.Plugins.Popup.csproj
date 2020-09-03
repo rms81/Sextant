@@ -10,7 +10,8 @@
       <ProjectReference Include="..\Sextant.XamForms\Sextant.XamForms.csproj" />
     </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Rg.Plugins.Popup" Version="2.0.0.3" />
+    <PackageReference Include="Pharmacist.MsBuild" Version="1.*" PrivateAssets="all" />
+    <PackageReference Include="Pharmacist.Common" Version="1.*" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>

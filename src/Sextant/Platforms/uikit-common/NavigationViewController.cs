@@ -148,7 +148,7 @@ namespace Sextant
                                 CATransaction.Commit();
                             }
 
-                            PushViewController(viewController, animate);
+                            PushViewController(viewController!, animate);
                             CATransaction.Commit();
                             return Disposable.Empty;
                         });

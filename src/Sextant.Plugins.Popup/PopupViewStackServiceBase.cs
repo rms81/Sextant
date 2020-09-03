@@ -21,7 +21,7 @@ namespace Sextant.Plugins.Popup
     /// <summary>
     /// Represents a popup view stack service implementation.
     /// </summary>
-    public class PopupViewStackServiceBase : ParameterViewStackServiceBase, IPopupViewStackService
+    public abstract class PopupViewStackServiceBase : ParameterViewStackServiceBase, IPopupViewStackService
     {
         private readonly IPopupNavigation _popupNavigation;
         private readonly IViewLocator _viewLocator;
@@ -35,7 +35,7 @@ namespace Sextant.Plugins.Popup
         /// <param name="viewLocator">The view locator.</param>
         /// <param name="viewModelFactory">The view model factory.</param>
         public PopupViewStackServiceBase(IView view, IPopupNavigation popupNavigation, IViewLocator viewLocator, IViewModelFactory viewModelFactory)
-            : base(view)
+            : base(view, viewModelFactory)
         {
             _popupNavigation = popupNavigation;
             _viewLocator = viewLocator;
@@ -177,7 +177,39 @@ namespace Sextant.Plugins.Popup
             string? contract = null,
             bool animate = true)
         {
-            return null;
+            if (viewModel == null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            if (navigationParameter == null)
+            {
+                throw new ArgumentNullException(nameof(navigationParameter));
+            }
+
+            var popupPage = LocatePopupFor(viewModel, contract);
+
+            viewModel
+                .InvokeViewModelAction<INavigating>(x =>
+                    x.WhenNavigatingTo(navigationParameter)
+                        .Subscribe(navigating =>
+                            Logger.Debug(
+                                $"Called `WhenNavigatingTo` on '{viewModel.Id}' passing parameter {navigationParameter}")));
+
+            return Observable
+                .FromAsync(() => _popupNavigation.PushAsync(popupPage, animate))
+                .Do(_ =>
+                {
+                    AddToStackAndTick(PopupSubject, viewModel, false);
+                    Logger.Debug($"Added page '{viewModel.Id}' (contract '{contract}') to stack.");
+
+                    viewModel
+                        .WhenNavigatedTo(navigationParameter)
+                        .Subscribe(navigated =>
+                            Logger.Debug(
+                                $"Called `WhenNavigatedTo` on '{viewModel.Id}' passing parameter {navigationParameter}"));
+                })
+                .ForkJoin(popupPage.Events().Disappearing.Take(1).Select(_ => Unit.Default), (_, __) => __);
         }
 
         /// <inheritdoc/>
@@ -187,7 +219,8 @@ namespace Sextant.Plugins.Popup
             bool animate = true)
             where TViewModel : INavigable
         {
-            return null;
+            var viewModel = _viewModelFactory.Create<TViewModel>(contract);
+            return PushPopupUntilPopped(viewModel, contract, animate);
         }
 
         /// <inheritdoc/>
@@ -225,10 +258,10 @@ namespace Sextant.Plugins.Popup
             stackSubject.OnNext(stack);
         }
 
-        private PopupPage LocatePopupFor(object viewModel, string? contract)
+        private SextantPopupPage LocatePopupFor(IViewModel viewModel, string? contract)
         {
             var view = _viewLocator.ResolveView(viewModel, contract);
-            var page = view as PopupPage;
+            var page = view as SextantPopupPage;
 
             if (view == null)
             {
@@ -242,7 +275,7 @@ namespace Sextant.Plugins.Popup
 
             if (page == null)
             {
-                throw new InvalidOperationException($"Resolved view '{view.GetType().FullName}' for type '{viewModel.GetType().FullName}', contract '{contract}' is not a Page.");
+                throw new InvalidOperationException($"Resolved view '{view.GetType().FullName}' for type '{viewModel.GetType().FullName}', contract '{contract}' is not a {nameof(SextantPopupPage)}.");
             }
 
             view.ViewModel = viewModel;

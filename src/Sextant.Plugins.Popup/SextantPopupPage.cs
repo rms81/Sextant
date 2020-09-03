@@ -30,7 +30,7 @@ namespace Sextant.Plugins.Popup
             nameof(ViewModel),
             typeof(TViewModel),
             typeof(IViewFor<TViewModel>),
-            (object)null,
+            (IViewFor<TViewModel>)null,
             BindingMode.OneWay,
             (BindableProperty.ValidateValueDelegate)null,
             new BindableProperty.BindingPropertyChangedDelegate(OnViewModelChanged),
@@ -61,7 +61,7 @@ namespace Sextant.Plugins.Popup
         protected override void OnBindingContextChanged()
         {
             base.OnBindingContextChanged();
-            ViewModel = BindingContext as TViewModel;
+            ViewModel = (BindingContext as TViewModel) !;
         }
 
         private static void OnViewModelChanged(BindableObject bindableObject, object oldValue, object newValue)
@@ -103,15 +103,14 @@ namespace Sextant.Plugins.Popup
                             return EventHandler;
                         },
                         x => BackgroundClicked += x,
-                        x => BackgroundClicked -= x)
-                    .Select(_ => Unit.Default);
+                        x => BackgroundClicked -= x);
         }
 
         /// <summary>
-        /// Gets or sets the background click observable signal.
+        /// Gets the background click observable signal.
         /// </summary>
         /// <value>The background click.</value>
-        public IObservable<Unit> BackgroundClick { get; protected set; }
+        public IObservable<Unit> BackgroundClick { get; }
 
         /// <summary>
         /// Gets or sets the ViewModel to display.

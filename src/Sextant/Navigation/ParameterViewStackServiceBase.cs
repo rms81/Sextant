@@ -12,14 +12,15 @@ namespace Sextant
     /// <summary>
     /// Abstract base class for view stack services.
     /// </summary>
-    public class ParameterViewStackServiceBase : ViewStackServiceBase, IParameterViewStackService
+    public abstract class ParameterViewStackServiceBase : ViewStackServiceBase, IParameterViewStackService
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ParameterViewStackServiceBase"/> class.
         /// </summary>
         /// <param name="view">The view.</param>
-        protected ParameterViewStackServiceBase(IView view)
-            : base(view)
+        /// <param name="viewModelFactory">The view model factory.</param>
+        protected ParameterViewStackServiceBase(IView view, IViewModelFactory viewModelFactory)
+            : base(view, viewModelFactory)
         {
         }
 
