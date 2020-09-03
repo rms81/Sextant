@@ -6,15 +6,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reactive;
-using System.Threading.Tasks;
-using Rg.Plugins.Popup.Contracts;
-using Rg.Plugins.Popup.Events;
-using Rg.Plugins.Popup.Pages;
 
 namespace Sextant.Plugins.Popup
 {
     /// <summary>
-    /// Interface representing a Sextant decorator of <see cref="IPopupNavigation"/>.
+    /// Interface representing a Sextant decorator for <see cref="Rg.Plugins.Popup.Contracts.IPopupNavigation"/>.
     /// </summary>
     public interface IPopupViewStackService
     {
@@ -63,6 +59,67 @@ namespace Sextant.Plugins.Popup
             where TViewModel : IViewModel;
 
         /// <summary>
+        /// Push a pop up page to the stack.
+        /// </summary>
+        /// <param name="viewModel">The view model.</param>
+        /// <param name="navigationParameter">The navigation parameter.</param>
+        /// <param name="contract">The contract.</param>
+        /// <param name="animate">Animate the page.</param>
+        /// <returns>A completion notification.</returns>
+        IObservable<Unit> PushPopup(INavigable viewModel, INavigationParameter navigationParameter, string? contract = null, bool animate = true);
+
+        /// <summary>
+        /// Push a pop up page to the stack.
+        /// </summary>
+        /// <param name="navigationParameter">The navigation parameter.</param>
+        /// <param name="contract">The contract.</param>
+        /// <param name="animate">Animate the page.</param>
+        /// <typeparam name="TViewModel">The view model type.</typeparam>
+        /// <returns>A completion notification.</returns>
+        IObservable<Unit> PushPopup<TViewModel>(INavigationParameter navigationParameter, string? contract = null, bool animate = true)
+            where TViewModel : INavigable;
+
+        /// <summary>
+        /// Pushes a pop up page and waits for the page to pop.
+        /// </summary>
+        /// <param name="viewModel">The view model.</param>
+        /// <param name="contract">The contract.</param>
+        /// <param name="animate">Animate the page.</param>
+        /// <returns>A completion notification.</returns>
+        IObservable<Unit> PushPopupUntilPopped(IViewModel viewModel, string? contract = null, bool animate = true);
+
+        /// <summary>
+        /// Pushes a pop up page and waits for the page to pop.
+        /// </summary>
+        /// <param name="contract">The contract.</param>
+        /// <param name="animate">Animate the page.</param>
+        /// <typeparam name="TViewModel">The view model type.</typeparam>
+        /// <returns>A completion notification.</returns>
+        IObservable<Unit> PushPopupUntilPopped<TViewModel>(string? contract = null, bool animate = true)
+            where TViewModel : IViewModel;
+
+        /// <summary>
+        /// Pushes a pop up page and waits for the page to pop.
+        /// </summary>
+        /// <param name="viewModel">The view model.</param>
+        /// <param name="navigationParameter">The navigation parameter.</param>
+        /// <param name="contract">The contract.</param>
+        /// <param name="animate">Animate the page.</param>
+        /// <returns>A completion notification.</returns>
+        IObservable<Unit> PushPopupUntilPopped(INavigable viewModel, INavigationParameter navigationParameter, string? contract = null, bool animate = true);
+
+        /// <summary>
+        /// Pushes a pop up page and waits for the page to pop.
+        /// </summary>
+        /// <param name="navigationParameter">The navigation parameter.</param>
+        /// <param name="contract">The contract.</param>
+        /// <param name="animate">Animate the page.</param>
+        /// <typeparam name="TViewModel">The view model type.</typeparam>
+        /// <returns>A completion notification.</returns>
+        IObservable<Unit> PushPopupUntilPopped<TViewModel>(INavigationParameter navigationParameter, string? contract = null, bool animate = true)
+            where TViewModel : INavigable;
+
+        /// <summary>
         /// Pop a pop up page.
         /// </summary>
         /// <param name="animate">Animate the page.</param>
@@ -80,8 +137,9 @@ namespace Sextant.Plugins.Popup
         /// Remove Popup.
         /// </summary>
         /// <param name="viewModel">The view model.</param>
+        /// <param name="contract">The contract.</param>
         /// <param name="animate">Animate the page.</param>
         /// <returns>A completion notification.</returns>
-        IObservable<Unit> RemovePopup(IViewModel viewModel, bool animate = true);
+        IObservable<Unit> RemovePopup(IViewModel viewModel, string contract = null, bool animate = true);
     }
 }

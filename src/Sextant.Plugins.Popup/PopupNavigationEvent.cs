@@ -5,7 +5,6 @@
 
 using System;
 using ReactiveUI;
-using Rg.Plugins.Popup.Pages;
 
 namespace Sextant.Plugins.Popup
 {
@@ -19,14 +18,19 @@ namespace Sextant.Plugins.Popup
         /// </summary>
         /// <param name="page">The view model.</param>
         /// <param name="isAnimated">Is the page animated.</param>
-        public PopupNavigationEvent(PopupPage page, bool isAnimated)
+        public PopupNavigationEvent(IViewFor<IViewModel> page, bool isAnimated)
         {
             if (page == null)
             {
                 throw new ArgumentNullException(nameof(page));
             }
 
-            ViewModel = (IViewModel)((IViewFor)page).ViewModel;
+            if (page.ViewModel == null)
+            {
+                throw new InvalidOperationException($"{nameof(page.ViewModel)} cannot be null.");
+            }
+
+            ViewModel = page.ViewModel;
             IsAnimated = isAnimated;
         }
 
