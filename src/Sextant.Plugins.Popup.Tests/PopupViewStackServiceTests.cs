@@ -11,7 +11,6 @@ using ReactiveUI;
 using Rg.Plugins.Popup.Contracts;
 using Rg.Plugins.Popup.Events;
 using Rg.Plugins.Popup.Pages;
-using Sextant.Abstractions;
 using Sextant.Mocks;
 using Shouldly;
 using Xunit;
@@ -144,43 +143,6 @@ namespace Sextant.Plugins.Popup.Tests
 
                 // Then
                 pushing.ViewModel.ShouldBe(viewModel);
-            }
-        }
-
-        /// <summary>
-        /// Tests that verify the Popped property.
-        /// </summary>
-        public class ThePopupStackProperty
-        {
-            /// <summary>
-            /// Tests the PageStack gets values.
-            /// </summary>
-            /// <param name="count">The PageStack count.</param>
-            /// <returns>A completion notification.</returns>
-            [Theory]
-            [InlineData(1)]
-            [InlineData(2)]
-            [InlineData(3)]
-            public async Task Should_Have_Count(int count)
-            {
-                // Given
-                var viewModel = new NavigableViewModelMock();
-                var popup = new PopupMock { ViewModel = viewModel };
-                var viewLocator = Substitute.For<IViewLocator>();
-                viewLocator.ResolveView(Arg.Any<IViewModel>()).Returns(popup);
-                PopupViewStackService sut =
-                    new PopupViewStackServiceFixture()
-                        .WithNavigation(new PopupNavigationMock())
-                        .WithViewLocator(viewLocator);
-
-                // When
-                for (int i = 0; i < count; i++)
-                {
-                    await sut.PushPopup(viewModel);
-                }
-
-                // Then
-                sut.PopupStack.ShouldContain(x => x == viewModel, count);
             }
         }
 

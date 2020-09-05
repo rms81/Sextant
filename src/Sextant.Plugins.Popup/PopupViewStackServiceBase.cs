@@ -50,7 +50,7 @@ namespace Sextant.Plugins.Popup
                 },
                 x => _popupNavigation.Pushing += x,
                 x => _popupNavigation.Pushing -= x)
-                .Select(x => new PopupNavigationEvent((IViewFor<IViewModel>)x.Page, x.IsAnimated));
+                .Select(x => new PopupNavigationEvent((IViewFor)x.Page, x.IsAnimated));
 
             Pushed = Observable.FromEvent<EventHandler<PopupNavigationEventArgs>, PopupNavigationEventArgs>(
                 eventHandler =>
@@ -62,7 +62,7 @@ namespace Sextant.Plugins.Popup
                 },
                 x => _popupNavigation.Pushed += x,
                 x => _popupNavigation.Pushed -= x)
-                .Select(x => new PopupNavigationEvent((IViewFor<IViewModel>)x.Page, x.IsAnimated));
+                .Select(x => new PopupNavigationEvent((IViewFor)x.Page, x.IsAnimated));
 
             Popping = Observable.FromEvent<EventHandler<PopupNavigationEventArgs>, PopupNavigationEventArgs>(
                 eventHandler =>
@@ -74,7 +74,7 @@ namespace Sextant.Plugins.Popup
                 },
                 x => _popupNavigation.Popping += x,
                 x => _popupNavigation.Popping -= x)
-                .Select(x => new PopupNavigationEvent((IViewFor<IViewModel>)x.Page, x.IsAnimated));
+                .Select(x => new PopupNavigationEvent((IViewFor)x.Page, x.IsAnimated));
 
             Popped = Observable.FromEvent<EventHandler<PopupNavigationEventArgs>, PopupNavigationEventArgs>(
                 eventHandler =>
@@ -85,7 +85,7 @@ namespace Sextant.Plugins.Popup
                 },
                 x => _popupNavigation.Popped += x,
                 x => _popupNavigation.Popped -= x)
-                .Select(x => new PopupNavigationEvent((IViewFor<IViewModel>)x.Page, x.IsAnimated));
+                .Select(x => new PopupNavigationEvent((IViewFor)x.Page, x.IsAnimated));
         }
 
         /// <inheritdoc/>
@@ -106,8 +106,8 @@ namespace Sextant.Plugins.Popup
             _popupNavigation
                 .PopupStack
                 .Cast<IViewFor<IViewModel>>()
-                .Select(x => x.ViewModel)
                 .Where(x => x != null)
+                .Select(x => x.ViewModel)
                 .ToList();
 #pragma warning restore 8619
 
@@ -259,7 +259,7 @@ namespace Sextant.Plugins.Popup
             Observable.FromAsync(() => _popupNavigation.PopAllAsync(animate));
 
         /// <inheritdoc/>
-        public IObservable<Unit> RemovePopup(IViewModel viewModel, string contract, bool animate = true)
+        public IObservable<Unit> RemovePopup(IViewModel viewModel, string? contract = null, bool animate = true)
         {
             PopupPage? popupPage = _viewLocator.ResolveView(viewModel, contract) as PopupPage;
             if (popupPage == null)

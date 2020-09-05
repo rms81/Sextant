@@ -140,6 +140,6 @@ namespace Sextant.Plugins.Popup
         /// <param name="contract">The contract.</param>
         /// <param name="animate">Animate the page.</param>
         /// <returns>A completion notification.</returns>
-        IObservable<Unit> RemovePopup(IViewModel viewModel, string contract = null, bool animate = true);
+        IObservable<Unit> RemovePopup(IViewModel viewModel, string? contract = null, bool animate = true);
     }
 }

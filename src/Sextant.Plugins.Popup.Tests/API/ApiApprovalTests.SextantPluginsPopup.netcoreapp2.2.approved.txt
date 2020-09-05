@@ -1,4 +1,37 @@
 [assembly: System.Runtime.Versioning.TargetFramework(".NETStandard,Version=v2.0", FrameworkDisplayName="")]
+namespace Rg.Plugins.Popup.Contracts
+{
+    public static class EventExtensions
+    {
+        public static Rg.Plugins.Popup.Contracts.RxIPopupNavigationEvents Events(this Rg.Plugins.Popup.Contracts.IPopupNavigation item) { }
+        public static Rg.Plugins.Popup.Contracts.RxIPopupPlatformEvents Events(this Rg.Plugins.Popup.Contracts.IPopupPlatform item) { }
+    }
+    public class RxIPopupNavigationEvents
+    {
+        public RxIPopupNavigationEvents(Rg.Plugins.Popup.Contracts.IPopupNavigation data) { }
+        public System.IObservable<Rg.Plugins.Popup.Events.PopupNavigationEventArgs> Popped { get; }
+        public System.IObservable<Rg.Plugins.Popup.Events.PopupNavigationEventArgs> Popping { get; }
+        public System.IObservable<Rg.Plugins.Popup.Events.PopupNavigationEventArgs> Pushed { get; }
+        public System.IObservable<Rg.Plugins.Popup.Events.PopupNavigationEventArgs> Pushing { get; }
+    }
+    public class RxIPopupPlatformEvents
+    {
+        public RxIPopupPlatformEvents(Rg.Plugins.Popup.Contracts.IPopupPlatform data) { }
+        public System.IObservable<System.EventArgs> OnInitialized { get; }
+    }
+}
+namespace Rg.Plugins.Popup.Pages
+{
+    public static class EventExtensions
+    {
+        public static Rg.Plugins.Popup.Pages.RxPopupPageEvents Events(this Rg.Plugins.Popup.Pages.PopupPage item) { }
+    }
+    public class RxPopupPageEvents : Xamarin.Forms.RxPageEvents
+    {
+        public RxPopupPageEvents(Rg.Plugins.Popup.Pages.PopupPage data) { }
+        public System.IObservable<System.EventArgs> BackgroundClicked { get; }
+    }
+}
 namespace Sextant.Plugins.Popup
 {
     public interface IPopupViewStackService
@@ -11,29 +44,113 @@ namespace Sextant.Plugins.Popup
         System.IObservable<System.Reactive.Unit> PopAllPopups(bool animate = true);
         System.IObservable<System.Reactive.Unit> PopPopup(bool animate = true);
         System.IObservable<System.Reactive.Unit> PushPopup(Sextant.IViewModel viewModel, string? contract = null, bool animate = true);
+        System.IObservable<System.Reactive.Unit> PushPopup(Sextant.INavigable viewModel, Sextant.INavigationParameter navigationParameter, string? contract = null, bool animate = true);
         System.IObservable<System.Reactive.Unit> PushPopup<TViewModel>(string? contract = null, bool animate = true)
             where TViewModel : Sextant.IViewModel;
-        System.IObservable<System.Reactive.Unit> RemovePopup(Sextant.IViewModel viewModel, bool animate = true);
+        System.IObservable<System.Reactive.Unit> PushPopup<TViewModel>(Sextant.INavigationParameter navigationParameter, string? contract = null, bool animate = true)
+            where TViewModel : Sextant.INavigable;
+        System.IObservable<System.Reactive.Unit> PushPopupUntilPopped(Sextant.IViewModel viewModel, string? contract = null, bool animate = true);
+        System.IObservable<System.Reactive.Unit> PushPopupUntilPopped(Sextant.INavigable viewModel, Sextant.INavigationParameter navigationParameter, string? contract = null, bool animate = true);
+        System.IObservable<System.Reactive.Unit> PushPopupUntilPopped<TViewModel>(string? contract = null, bool animate = true)
+            where TViewModel : Sextant.IViewModel;
+        System.IObservable<System.Reactive.Unit> PushPopupUntilPopped<TViewModel>(Sextant.INavigationParameter navigationParameter, string? contract = null, bool animate = true)
+            where TViewModel : Sextant.INavigable;
+        System.IObservable<System.Reactive.Unit> RemovePopup(Sextant.IViewModel viewModel, string? contract = null, bool animate = true);
     }
     public class PopupNavigationEvent
     {
-        public PopupNavigationEvent(Rg.Plugins.Popup.Pages.PopupPage page, bool isAnimated) { }
+        public PopupNavigationEvent(ReactiveUI.IViewFor<Sextant.IViewModel> page, bool isAnimated) { }
         public bool IsAnimated { get; }
         public Sextant.IViewModel ViewModel { get; }
     }
-    public class PopupViewStackService : Sextant.ParameterViewStackServiceBase, Sextant.Plugins.Popup.IPopupViewStackService
+    public sealed class PopupViewStackService : Sextant.Plugins.Popup.PopupViewStackServiceBase
     {
-        public PopupViewStackService(Sextant.IView view, Rg.Plugins.Popup.Contracts.IPopupNavigation popupNavigation, ReactiveUI.IViewLocator viewLocator, Sextant.Abstractions.IViewModelFactory viewModelFactory) { }
+        public PopupViewStackService(Sextant.IView view, Rg.Plugins.Popup.Contracts.IPopupNavigation popupNavigation, ReactiveUI.IViewLocator viewLocator, Sextant.IViewModelFactory viewModelFactory) { }
+    }
+    public abstract class PopupViewStackServiceBase : Sextant.ParameterViewStackServiceBase, Sextant.Plugins.Popup.IPopupViewStackService
+    {
+        public PopupViewStackServiceBase(Sextant.IView view, Rg.Plugins.Popup.Contracts.IPopupNavigation popupNavigation, ReactiveUI.IViewLocator viewLocator, Sextant.IViewModelFactory viewModelFactory) { }
         public System.IObservable<Sextant.Plugins.Popup.PopupNavigationEvent> Popped { get; }
         public System.IObservable<Sextant.Plugins.Popup.PopupNavigationEvent> Popping { get; }
         public System.Collections.Generic.IReadOnlyList<Sextant.IViewModel> PopupStack { get; }
+        protected System.Reactive.Subjects.BehaviorSubject<System.Collections.Immutable.IImmutableList<Sextant.IViewModel>> PopupSubject { get; }
         public System.IObservable<Sextant.Plugins.Popup.PopupNavigationEvent> Pushed { get; }
         public System.IObservable<Sextant.Plugins.Popup.PopupNavigationEvent> Pushing { get; }
         public System.IObservable<System.Reactive.Unit> PopAllPopups(bool animate = true) { }
         public System.IObservable<System.Reactive.Unit> PopPopup(bool animate = true) { }
         public System.IObservable<System.Reactive.Unit> PushPopup(Sextant.IViewModel viewModel, string? contract = null, bool animate = true) { }
+        public System.IObservable<System.Reactive.Unit> PushPopup(Sextant.INavigable viewModel, Sextant.INavigationParameter navigationParameter, string? contract = null, bool animate = true) { }
         public System.IObservable<System.Reactive.Unit> PushPopup<TViewModel>(string? contract = null, bool animate = true)
             where TViewModel : Sextant.IViewModel { }
-        public System.IObservable<System.Reactive.Unit> RemovePopup(Sextant.IViewModel viewModel, bool animate = true) { }
+        public System.IObservable<System.Reactive.Unit> PushPopup<TViewModel>(Sextant.INavigationParameter navigationParameter, string? contract = null, bool animate = true)
+            where TViewModel : Sextant.INavigable { }
+        public System.IObservable<System.Reactive.Unit> PushPopupUntilPopped(Sextant.IViewModel viewModel, string? contract = null, bool animate = true) { }
+        public System.IObservable<System.Reactive.Unit> PushPopupUntilPopped(Sextant.INavigable viewModel, Sextant.INavigationParameter navigationParameter, string? contract = null, bool animate = true) { }
+        public System.IObservable<System.Reactive.Unit> PushPopupUntilPopped<TViewModel>(string? contract = null, bool animate = true)
+            where TViewModel : Sextant.IViewModel { }
+        public System.IObservable<System.Reactive.Unit> PushPopupUntilPopped<TViewModel>(Sextant.INavigationParameter navigationParameter, string? contract = null, bool animate = true)
+            where TViewModel : Sextant.INavigable { }
+        public System.IObservable<System.Reactive.Unit> RemovePopup(Sextant.IViewModel viewModel, string? contract = null, bool animate = true) { }
+    }
+    public abstract class SextantPopupPage : Rg.Plugins.Popup.Pages.PopupPage, ReactiveUI.IActivatableView, ReactiveUI.IViewFor
+    {
+        public static readonly Xamarin.Forms.BindableProperty ViewModelProperty;
+        protected SextantPopupPage() { }
+        public System.IObservable<System.Reactive.Unit> BackgroundClick { get; }
+        public object ViewModel { get; set; }
+        protected override void OnBindingContextChanged() { }
+    }
+    public abstract class SextantPopupPage<TViewModel> : Sextant.Plugins.Popup.SextantPopupPage, ReactiveUI.IActivatableView, ReactiveUI.IViewFor, ReactiveUI.IViewFor<TViewModel>
+        where TViewModel :  class, Sextant.IViewModel
+    {
+        public static readonly Xamarin.Forms.BindableProperty ViewModelProperty;
+        protected SextantPopupPage() { }
+        public new TViewModel ViewModel { get; set; }
+        protected override void OnBindingContextChanged() { }
+    }
+}
+namespace Xamarin.Forms
+{
+    public static class EventExtensions
+    {
+        public static Xamarin.Forms.RxBindableObjectEvents Events(this Xamarin.Forms.BindableObject item) { }
+        public static Xamarin.Forms.RxElementEvents Events(this Xamarin.Forms.Element item) { }
+        public static Xamarin.Forms.RxPageEvents Events(this Xamarin.Forms.Page item) { }
+        public static Xamarin.Forms.RxVisualElementEvents Events(this Xamarin.Forms.VisualElement item) { }
+    }
+    public class RxBindableObjectEvents
+    {
+        public RxBindableObjectEvents(Xamarin.Forms.BindableObject data) { }
+        public System.IObservable<System.EventArgs> BindingContextChanged { get; }
+        public System.IObservable<System.ComponentModel.PropertyChangedEventArgs> PropertyChanged { get; }
+        public System.IObservable<Xamarin.Forms.PropertyChangingEventArgs> PropertyChanging { get; }
+    }
+    public class RxElementEvents : Xamarin.Forms.RxBindableObjectEvents
+    {
+        public RxElementEvents(Xamarin.Forms.Element data) { }
+        public System.IObservable<Xamarin.Forms.ElementEventArgs> ChildAdded { get; }
+        public System.IObservable<Xamarin.Forms.ElementEventArgs> ChildRemoved { get; }
+        public System.IObservable<Xamarin.Forms.ElementEventArgs> DescendantAdded { get; }
+        public System.IObservable<Xamarin.Forms.ElementEventArgs> DescendantRemoved { get; }
+        [System.Obsolete("PlatformSet is obsolete as of 3.5.0. Do not use this event.", false)]
+        public System.IObservable<System.EventArgs> PlatformSet { get; }
+    }
+    public class RxPageEvents : Xamarin.Forms.RxVisualElementEvents
+    {
+        public RxPageEvents(Xamarin.Forms.Page data) { }
+        public System.IObservable<System.EventArgs> Appearing { get; }
+        public System.IObservable<System.EventArgs> Disappearing { get; }
+        public System.IObservable<System.EventArgs> LayoutChanged { get; }
+    }
+    public class RxVisualElementEvents : Xamarin.Forms.RxElementEvents
+    {
+        public RxVisualElementEvents(Xamarin.Forms.VisualElement data) { }
+        public System.IObservable<Xamarin.Forms.Internals.EventArg<Xamarin.Forms.VisualElement>> BatchCommitted { get; }
+        public System.IObservable<System.EventArgs> ChildrenReordered { get; }
+        public System.IObservable<Xamarin.Forms.VisualElement.FocusRequestArgs> FocusChangeRequested { get; }
+        public System.IObservable<Xamarin.Forms.FocusEventArgs> Focused { get; }
+        public System.IObservable<System.EventArgs> MeasureInvalidated { get; }
+        public System.IObservable<System.EventArgs> SizeChanged { get; }
+        public System.IObservable<Xamarin.Forms.FocusEventArgs> Unfocused { get; }
     }
 }

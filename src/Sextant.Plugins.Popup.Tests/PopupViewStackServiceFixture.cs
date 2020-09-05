@@ -9,8 +9,6 @@ using NSubstitute;
 using ReactiveUI;
 using ReactiveUI.Testing;
 using Rg.Plugins.Popup.Contracts;
-using Rg.Plugins.Popup.Pages;
-using Sextant.Abstractions;
 using Sextant.Mocks;
 
 namespace Sextant.Plugins.Popup.Tests
@@ -33,7 +31,8 @@ namespace Sextant.Plugins.Popup.Tests
                 .PushPage(Arg.Any<INavigable>(), Arg.Any<string>(), Arg.Any<bool>(), Arg.Any<bool>())
                 .Returns(Observable.Return(Unit.Default));
             _view.PopPage().Returns(Observable.Return(Unit.Default));
-            _viewLocator.ResolveView(Arg.Any<IViewModel>()).Returns(new PopupMock());
+            _viewLocator.ResolveView(Arg.Any<IViewModel>()).Returns(new PopupMock { ViewModel = new NavigableViewModelMock() });
+            _viewModelFactory.Create<NavigableViewModelMock>().Returns(new NavigableViewModelMock());
         }
 
         public static implicit operator PopupViewStackService(PopupViewStackServiceFixture fixture) =>
