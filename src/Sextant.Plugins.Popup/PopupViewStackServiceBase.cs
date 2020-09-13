@@ -255,6 +255,12 @@ namespace Sextant.Plugins.Popup
             Observable.FromAsync(() => _popupNavigation.PopAsync(animate));
 
         /// <inheritdoc/>
+        public IObservable<Unit> PopPopup(INavigationParameter navigationParameter, bool animate = true)
+        {
+            return null;
+        }
+
+        /// <inheritdoc/>
         public IObservable<Unit> PopAllPopups(bool animate = true) =>
             Observable.FromAsync(() => _popupNavigation.PopAllAsync(animate));
 

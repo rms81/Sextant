@@ -127,6 +127,14 @@ namespace Sextant.Plugins.Popup
         IObservable<Unit> PopPopup(bool animate = true);
 
         /// <summary>
+        /// Pop a pop up page.
+        /// </summary>
+        /// <param name="navigationParameter">The navigation parameter.</param>
+        /// <param name="animate">Animate the page.</param>
+        /// <returns>A completion notification.</returns>
+        IObservable<Unit> PopPopup(INavigationParameter navigationParameter, bool animate = true);
+
+        /// <summary>
         /// Pop all popups from the stack.
         /// </summary>
         /// <param name="animate">Animate the page.</param>
