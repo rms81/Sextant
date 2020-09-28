@@ -100,7 +100,7 @@ namespace Sextant
         public IObservable<Unit> PushPage<TViewModel>(INavigationParameter parameter, string? contract = null, bool resetStack = false, bool animate = true)
             where TViewModel : INavigable
         {
-            var viewModel = ViewModelFactory.Current.Create<TViewModel>();
+            var viewModel = Factory.Create<TViewModel>();
             return PushPage(viewModel, parameter, contract, resetStack, animate);
         }
 
@@ -108,7 +108,7 @@ namespace Sextant
         public IObservable<Unit> PushModal<TViewModel>(INavigationParameter parameter, string? contract = null, bool withNavigationPage = true)
             where TViewModel : INavigable
         {
-            var viewModel = ViewModelFactory.Current.Create<TViewModel>();
+            var viewModel = Factory.Create<TViewModel>(contract);
             return PushModal(viewModel, parameter, contract, withNavigationPage);
         }
 

@@ -32,7 +32,7 @@ namespace Sextant.Plugins.Popup.Tests
                 .Returns(Observable.Return(Unit.Default));
             _view.PopPage().Returns(Observable.Return(Unit.Default));
             _viewLocator.ResolveView(Arg.Any<IViewModel>()).Returns(new PopupMock { ViewModel = new NavigableViewModelMock() });
-            _viewModelFactory.Create<NavigableViewModelMock>().Returns(new NavigableViewModelMock());
+            _viewModelFactory.Create<NavigableViewModelMock>(Arg.Any<string>()).Returns(new NavigableViewModelMock());
         }
 
         public static implicit operator PopupViewStackService(PopupViewStackServiceFixture fixture) =>

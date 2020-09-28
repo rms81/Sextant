@@ -34,7 +34,7 @@ namespace Rg.Plugins.Popup.Pages
 }
 namespace Sextant.Plugins.Popup
 {
-    public interface IPopupViewStackService
+    public interface IPopupViewStackService : Sextant.IParameterViewStackService, Sextant.IViewStackService
     {
         System.IObservable<Sextant.Plugins.Popup.PopupNavigationEvent> Popped { get; }
         System.IObservable<Sextant.Plugins.Popup.PopupNavigationEvent> Popping { get; }
@@ -43,6 +43,7 @@ namespace Sextant.Plugins.Popup
         System.IObservable<Sextant.Plugins.Popup.PopupNavigationEvent> Pushing { get; }
         System.IObservable<System.Reactive.Unit> PopAllPopups(bool animate = true);
         System.IObservable<System.Reactive.Unit> PopPopup(bool animate = true);
+        System.IObservable<System.Reactive.Unit> PopPopup(Sextant.INavigationParameter navigationParameter, bool animate = true);
         System.IObservable<System.Reactive.Unit> PushPopup(Sextant.IViewModel viewModel, string? contract = null, bool animate = true);
         System.IObservable<System.Reactive.Unit> PushPopup(Sextant.INavigable viewModel, Sextant.INavigationParameter navigationParameter, string? contract = null, bool animate = true);
         System.IObservable<System.Reactive.Unit> PushPopup<TViewModel>(string? contract = null, bool animate = true)
@@ -59,7 +60,7 @@ namespace Sextant.Plugins.Popup
     }
     public class PopupNavigationEvent
     {
-        public PopupNavigationEvent(ReactiveUI.IViewFor<Sextant.IViewModel> page, bool isAnimated) { }
+        public PopupNavigationEvent(ReactiveUI.IViewFor page, bool isAnimated) { }
         public bool IsAnimated { get; }
         public Sextant.IViewModel ViewModel { get; }
     }
@@ -67,9 +68,9 @@ namespace Sextant.Plugins.Popup
     {
         public PopupViewStackService(Sextant.IView view, Rg.Plugins.Popup.Contracts.IPopupNavigation popupNavigation, ReactiveUI.IViewLocator viewLocator, Sextant.IViewModelFactory viewModelFactory) { }
     }
-    public abstract class PopupViewStackServiceBase : Sextant.ParameterViewStackServiceBase, Sextant.Plugins.Popup.IPopupViewStackService
+    public abstract class PopupViewStackServiceBase : Sextant.ParameterViewStackServiceBase, Sextant.IParameterViewStackService, Sextant.IViewStackService, Sextant.Plugins.Popup.IPopupViewStackService
     {
-        public PopupViewStackServiceBase(Sextant.IView view, Rg.Plugins.Popup.Contracts.IPopupNavigation popupNavigation, ReactiveUI.IViewLocator viewLocator, Sextant.IViewModelFactory viewModelFactory) { }
+        protected PopupViewStackServiceBase(Sextant.IView view, Rg.Plugins.Popup.Contracts.IPopupNavigation popupNavigation, ReactiveUI.IViewLocator viewLocator, Sextant.IViewModelFactory viewModelFactory) { }
         public System.IObservable<Sextant.Plugins.Popup.PopupNavigationEvent> Popped { get; }
         public System.IObservable<Sextant.Plugins.Popup.PopupNavigationEvent> Popping { get; }
         public System.Collections.Generic.IReadOnlyList<Sextant.IViewModel> PopupStack { get; }
@@ -78,6 +79,7 @@ namespace Sextant.Plugins.Popup
         public System.IObservable<Sextant.Plugins.Popup.PopupNavigationEvent> Pushing { get; }
         public System.IObservable<System.Reactive.Unit> PopAllPopups(bool animate = true) { }
         public System.IObservable<System.Reactive.Unit> PopPopup(bool animate = true) { }
+        public System.IObservable<System.Reactive.Unit> PopPopup(Sextant.INavigationParameter navigationParameter, bool animate = true) { }
         public System.IObservable<System.Reactive.Unit> PushPopup(Sextant.IViewModel viewModel, string? contract = null, bool animate = true) { }
         public System.IObservable<System.Reactive.Unit> PushPopup(Sextant.INavigable viewModel, Sextant.INavigationParameter navigationParameter, string? contract = null, bool animate = true) { }
         public System.IObservable<System.Reactive.Unit> PushPopup<TViewModel>(string? contract = null, bool animate = true)

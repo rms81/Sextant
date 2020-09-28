@@ -12,7 +12,7 @@ namespace Sextant.Plugins.Popup
     /// <summary>
     /// Interface representing a Sextant decorator for <see cref="Rg.Plugins.Popup.Contracts.IPopupNavigation"/>.
     /// </summary>
-    public interface IPopupViewStackService
+    public interface IPopupViewStackService : IParameterViewStackService
     {
         /// <summary>
         /// Gets an observable sequence of pushing events.

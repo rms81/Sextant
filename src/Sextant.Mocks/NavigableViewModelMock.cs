@@ -38,15 +38,15 @@ namespace Sextant.Mocks
         public string Id => _id ?? nameof(NavigableViewModelMock);
 
         /// <inheritdoc/>
-        public IObservable<Unit> WhenNavigatedTo(INavigationParameter parameter) =>
+        public virtual IObservable<Unit> WhenNavigatedTo(INavigationParameter parameter) =>
             Observable.Return(Unit.Default).Do(_ => _navigatedTo.OnNext(Unit.Default));
 
         /// <inheritdoc/>
-        public IObservable<Unit> WhenNavigatedFrom(INavigationParameter parameter) =>
+        public virtual IObservable<Unit> WhenNavigatedFrom(INavigationParameter parameter) =>
             Observable.Return(Unit.Default).Do(_ => _navigatedFrom.OnNext(Unit.Default));
 
         /// <inheritdoc/>
-        public IObservable<Unit> WhenNavigatingTo(INavigationParameter parameter) =>
+        public virtual IObservable<Unit> WhenNavigatingTo(INavigationParameter parameter) =>
             Observable.Return(Unit.Default).Do(_ => _navigatingTo.OnNext(Unit.Default));
     }
 }

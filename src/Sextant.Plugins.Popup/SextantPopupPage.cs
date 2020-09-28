@@ -41,7 +41,7 @@ namespace Sextant.Plugins.Popup
         /// <summary>
         /// Gets or sets the ViewModel to display.
         /// </summary>
-        public TViewModel ViewModel
+        public new TViewModel ViewModel
         {
             get => (TViewModel)GetValue(ViewModelProperty);
             set => SetValue(ViewModelProperty, value);

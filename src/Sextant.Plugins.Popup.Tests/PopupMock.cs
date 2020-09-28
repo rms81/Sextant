@@ -12,24 +12,7 @@ namespace Sextant.Plugins.Popup.Tests
     /// <summary>
     /// Represents a popup page.
     /// </summary>
-    public class PopupMock : PopupPage, IViewFor<NavigableViewModelMock>
+    public class PopupMock : SextantPopupPage
     {
-        private NavigableViewModelMock? _viewModel;
-
-        /// <summary>
-        /// Gets or sets the view model.
-        /// </summary>
-        object IViewFor.ViewModel
-        {
-            get => _viewModel;
-            set => _viewModel = value as NavigableViewModelMock;
-        }
-
-        /// <inheritdoc />
-        public NavigableViewModelMock? ViewModel
-        {
-            get => _viewModel;
-            set => _viewModel = value;
-        }
     }
 }

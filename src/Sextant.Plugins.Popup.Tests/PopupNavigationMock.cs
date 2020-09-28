@@ -65,8 +65,9 @@ namespace Sextant.Plugins.Popup.Tests
         /// <inheritdoc/>
         public Task PopAllAsync(bool animate = true)
         {
-            _stack.Clear();
-            return Task.CompletedTask;
+            var popupTasks = PopupStack.ToList().Select(page => RemovePageAsync(page, animate));
+
+            return Task.WhenAll(popupTasks).ContinueWith(_ => _stack.Clear());
         }
 
         /// <inheritdoc/>
@@ -74,6 +75,7 @@ namespace Sextant.Plugins.Popup.Tests
         {
             var remove = _stack.ToList()[EnumerableExtensions.IndexOf(_stack.ToList(), page)];
             _stack.ToList().Remove(remove);
+            Popped?.Invoke(this, new PopupNavigationEventArgs(remove, animate));
             return Task.CompletedTask;
         }
     }
