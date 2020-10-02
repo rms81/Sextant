@@ -172,106 +172,6 @@ namespace Sextant.Plugins.Popup.Tests
         }
 
         /// <summary>
-        /// Tests that verify the PushPopup generic method.
-        /// </summary>
-        public class ThePushPopupGenericMethod
-        {
-            /// <summary>
-            /// Tests the method calls the decorated method.
-            /// </summary>
-            /// <returns>A completion notification.</returns>
-            [Fact]
-            public async Task Should_Call_Popup_Navigation()
-            {
-                // Given
-                var navigation = Substitute.For<IPopupNavigation>();
-                PopupViewStackService sut = new PopupViewStackServiceFixture().WithNavigation(navigation);
-
-                // When
-                await sut.PushPopup<NavigableViewModelMock>();
-
-                // Then
-                await navigation.Received(1).PushAsync(Arg.Any<PopupPage>()).ConfigureAwait(false);
-            }
-
-            /// <summary>
-            /// Tests the method calls the view model factory.
-            /// </summary>
-            /// <returns>A completion notification.</returns>
-            [Fact]
-            public async Task Should_Call_View_Model_Factory()
-            {
-                // Given
-                var viewModelFactory = Substitute.For<IViewModelFactory>();
-                viewModelFactory.Create<NavigableViewModelMock>(Arg.Any<string>()).Returns(new NavigableViewModelMock());
-                PopupViewStackService sut = new PopupViewStackServiceFixture().WithViewModelFactory(viewModelFactory);
-
-                // When
-                await sut.PushPopup<NavigableViewModelMock>();
-
-                // Then
-                viewModelFactory.Received(1).Create<NavigableViewModelMock>();
-            }
-
-            /// <summary>
-            /// Tests the method calls the view locator.
-            /// </summary>
-            /// <returns>A completion notification.</returns>
-            [Fact]
-            public async Task Should_Call_View_Locator()
-            {
-                // Given
-                var viewLocator = Substitute.For<IViewLocator>();
-                viewLocator.ResolveView(Arg.Any<IViewModel>()).Returns(new PopupMock());
-                PopupViewStackService sut = new PopupViewStackServiceFixture().WithViewLocator(viewLocator);
-
-                // When
-                await sut.PushPopup<NavigableViewModelMock>();
-
-                // Then
-                viewLocator.Received(1).ResolveView(Arg.Any<IViewModel>());
-            }
-
-            /// <summary>
-            /// Tests the method emits a Pushing event.
-            /// </summary>
-            /// <returns>A completion notification.</returns>
-            [Fact]
-            public async Task Should_Observe_Pushing()
-            {
-                // Given
-                bool pushing = false;
-                PopupViewStackService sut = new PopupViewStackServiceFixture().WithNavigation(new PopupNavigationMock());
-                sut.Pushing.Select(_ => true).Subscribe(x => pushing = x);
-
-                // When
-                await sut.PushPopup<NavigableViewModelMock>();
-
-                // Then
-                pushing.ShouldBeTrue();
-            }
-
-            /// <summary>
-            /// Tests the method emits a Pushed event.
-            /// </summary>
-            /// <returns>A completion notification.</returns>
-            [Fact]
-            public async Task Should_Observe_Pushed()
-            {
-                // Given
-                bool pushed = false;
-                PopupViewStackService sut = new PopupViewStackServiceFixture().WithNavigation(new PopupNavigationMock());
-                sut.Pushed.Select(_ => true).Subscribe(x => pushed = x);
-
-                // When
-                await sut.PushPopup<NavigableViewModelMock>();
-
-                // Then
-                pushed.ShouldBeTrue();
-            }
-        }
-
-        /// <summary>
         /// Tests that verify the PushPopup method.
         /// </summary>
         public class ThePushPopupMethod
@@ -355,7 +255,7 @@ namespace Sextant.Plugins.Popup.Tests
         }
 
         /// <summary>
-        /// Tests that verify the PushPopup method.
+        /// Tests that verify the PushPopup method that takes parameters.
         /// </summary>
         public class ThePushPopupWithParametersMethod
         {
@@ -489,6 +389,106 @@ namespace Sextant.Plugins.Popup.Tests
 
         /// <summary>
         /// Tests that verify the PushPopup generic method.
+        /// </summary>
+        public class ThePushPopupGenericMethod
+        {
+            /// <summary>
+            /// Tests the method calls the decorated method.
+            /// </summary>
+            /// <returns>A completion notification.</returns>
+            [Fact]
+            public async Task Should_Call_Popup_Navigation()
+            {
+                // Given
+                var navigation = Substitute.For<IPopupNavigation>();
+                PopupViewStackService sut = new PopupViewStackServiceFixture().WithNavigation(navigation);
+
+                // When
+                await sut.PushPopup<NavigableViewModelMock>();
+
+                // Then
+                await navigation.Received(1).PushAsync(Arg.Any<PopupPage>()).ConfigureAwait(false);
+            }
+
+            /// <summary>
+            /// Tests the method calls the view model factory.
+            /// </summary>
+            /// <returns>A completion notification.</returns>
+            [Fact]
+            public async Task Should_Call_View_Model_Factory()
+            {
+                // Given
+                var viewModelFactory = Substitute.For<IViewModelFactory>();
+                viewModelFactory.Create<NavigableViewModelMock>(Arg.Any<string>()).Returns(new NavigableViewModelMock());
+                PopupViewStackService sut = new PopupViewStackServiceFixture().WithViewModelFactory(viewModelFactory);
+
+                // When
+                await sut.PushPopup<NavigableViewModelMock>();
+
+                // Then
+                viewModelFactory.Received(1).Create<NavigableViewModelMock>();
+            }
+
+            /// <summary>
+            /// Tests the method calls the view locator.
+            /// </summary>
+            /// <returns>A completion notification.</returns>
+            [Fact]
+            public async Task Should_Call_View_Locator()
+            {
+                // Given
+                var viewLocator = Substitute.For<IViewLocator>();
+                viewLocator.ResolveView(Arg.Any<IViewModel>()).Returns(new PopupMock());
+                PopupViewStackService sut = new PopupViewStackServiceFixture().WithViewLocator(viewLocator);
+
+                // When
+                await sut.PushPopup<NavigableViewModelMock>();
+
+                // Then
+                viewLocator.Received(1).ResolveView(Arg.Any<IViewModel>());
+            }
+
+            /// <summary>
+            /// Tests the method emits a Pushing event.
+            /// </summary>
+            /// <returns>A completion notification.</returns>
+            [Fact]
+            public async Task Should_Observe_Pushing()
+            {
+                // Given
+                bool pushing = false;
+                PopupViewStackService sut = new PopupViewStackServiceFixture().WithNavigation(new PopupNavigationMock());
+                sut.Pushing.Select(_ => true).Subscribe(x => pushing = x);
+
+                // When
+                await sut.PushPopup<NavigableViewModelMock>();
+
+                // Then
+                pushing.ShouldBeTrue();
+            }
+
+            /// <summary>
+            /// Tests the method emits a Pushed event.
+            /// </summary>
+            /// <returns>A completion notification.</returns>
+            [Fact]
+            public async Task Should_Observe_Pushed()
+            {
+                // Given
+                bool pushed = false;
+                PopupViewStackService sut = new PopupViewStackServiceFixture().WithNavigation(new PopupNavigationMock());
+                sut.Pushed.Select(_ => true).Subscribe(x => pushed = x);
+
+                // When
+                await sut.PushPopup<NavigableViewModelMock>();
+
+                // Then
+                pushed.ShouldBeTrue();
+            }
+        }
+
+        /// <summary>
+        /// Tests that verify the PushPopup generic method that takes parameters.
         /// </summary>
         public class ThePushPopupGenericWithParameterMethod
         {

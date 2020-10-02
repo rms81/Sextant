@@ -4,14 +4,15 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
+      <AssemblyName>Sextant.Plugins.Popup</AssemblyName>
+      <RootNamespace>Sextant</RootNamespace>
+      <PackageId>Sextant.Plugins.Popup</PackageId>
     </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Sextant.XamForms\Sextant.XamForms.csproj" />
     </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Pharmacist.MsBuild" Version="1.*" PrivateAssets="all" />
-    <PackageReference Include="Pharmacist.Common" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="Rg.Plugins.Popup" Version="2.*" />
   </ItemGroup>
 
