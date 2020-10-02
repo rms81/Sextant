@@ -734,6 +734,99 @@ namespace Sextant.Plugins.Popup.Tests
         }
 
         /// <summary>
+        /// Tests that verify the PopPopup method.
+        /// </summary>
+        public class ThePopPopupWithParameterMethod
+        {
+            /// <summary>
+            /// Tests the method calls the decorated method.
+            /// </summary>
+            /// <returns>A completion notification.</returns>
+            [Fact]
+            public async Task Should_Call_Popup_Navigation()
+            {
+                // Given
+                var navigation = Substitute.For<IPopupNavigation>();
+                var viewModel = new NavigableViewModelMock();
+                var viewLocator = Substitute.For<IViewLocator>();
+                viewLocator.ResolveView(Arg.Any<IViewModel>()).Returns(new PopupMock());
+                PopupViewStackService sut = new PopupViewStackServiceFixture().WithNavigation(navigation).WithViewLocator(viewLocator);
+
+                // When
+                await sut.PushPage(viewModel);
+                await sut.PopPopup(new NavigationParameter());
+
+                // Then
+                await navigation.Received(1).PopAsync(Arg.Any<bool>()).ConfigureAwait(false);
+            }
+
+            /// <summary>
+            /// Tests the method emits a Popping event.
+            /// </summary>
+            /// <returns>A completion notification.</returns>
+            [Fact]
+            public async Task Should_Observe_Popping()
+            {
+                // Given
+                bool popping = false;
+                PopupViewStackService sut = new PopupViewStackServiceFixture().WithNavigation(new PopupNavigationMock());
+                sut.Popping.Select(_ => true).Subscribe(x => popping = x);
+
+                // When
+                await sut.PushPopup(new NavigableViewModelMock());
+                await sut.PopPopup(new NavigationParameter());
+
+                // Then
+                popping.ShouldBeTrue();
+            }
+
+            /// <summary>
+            /// Tests the method emits a Popped event.
+            /// </summary>
+            /// <returns>A completion notification.</returns>
+            [Fact]
+            public async Task Should_Observe_Popped()
+            {
+                // Given
+                bool popped = false;
+                PopupViewStackService sut = new PopupViewStackServiceFixture().WithNavigation(new PopupNavigationMock());
+                sut.Popped.Select(_ => true).Subscribe(x => popped = x);
+
+                // When
+                await sut.PushPopup(new NavigableViewModelMock());
+                await sut.PopPopup(new NavigationParameter());
+
+                // Then
+                popped.ShouldBeTrue();
+            }
+
+            /// <summary>
+            /// Tests the popped view model is destroyed.
+            /// </summary>
+            /// <returns>A completion notification.</returns>
+            [Fact]
+            public async Task Should_Call_Destroy()
+            {
+                // Given
+                var viewModel = Substitute.For<IEverything>();
+                var popup = new PopupMock
+                {
+                    ViewModel = viewModel
+                };
+                bool pushed = false;
+                PopupViewStackService sut = new PopupViewStackServiceFixture().WithNavigation(new PopupNavigationMock());
+                sut.Popped.Select(_ => true).Subscribe(x => pushed = x);
+
+                // When
+                await sut.PushPopup(viewModel);
+                await sut.PopPopup(new NavigationParameter());
+
+                // Then
+                ((IDestructible)popup.ViewModel).Received(1).Destroy();
+            }
+        }
+
+        /// <summary>
         /// Tests that verify the PopAllPopups method.
         /// </summary>
         public class ThePopAllPopupsMethod

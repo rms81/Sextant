@@ -199,9 +199,9 @@ namespace Sextant.Plugins.Popup
             Observable.Start(() => _popupNavigation.PopupStack[_popupNavigation.PopupStack.Count - 1], CurrentThreadScheduler.Instance)
                 .ObserveOn(CurrentThreadScheduler.Instance)
                 .Cast<SextantPopupPage>()
-                .Select(x => Observable.FromAsync(() => _popupNavigation.PopAsync())
+                .Select(page => Observable.FromAsync(() => _popupNavigation.PopAsync())
                     .Select(_ =>
-                        x.ViewModel
+                        page.ViewModel
                             .InvokeViewModelAction<INavigated>(viewModel => viewModel.WhenNavigatedFrom(navigationParameter)))
                     .Select(__ => Unit.Default))
                 .Switch();
