@@ -10,8 +10,8 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using DiffEngine;
 using PublicApiGenerator;
-using Shouldly;
 using Splat;
 using Xunit;
 
@@ -29,7 +29,7 @@ namespace Sextant.Tests
         /// Tests to make sure the splat project is approved.
         /// </summary>
         [Fact]
-        public void SextantProject()
+        public void Sextant()
         {
             CheckApproval(typeof(IViewStackService).Assembly);
         }
@@ -60,7 +60,7 @@ namespace Sextant.Tests
             if (!string.Equals(receivedPublicApi, approvedPublicApi, StringComparison.InvariantCulture))
             {
                 File.WriteAllText(receivedFileName, receivedPublicApi);
-                ShouldlyConfiguration.DiffTools.GetDiffTool().Open(receivedFileName, approvedFileName, true);
+                DiffRunner.Launch(receivedFileName, approvedFileName);
             }
 
             Assert.Equal(approvedPublicApi, receivedPublicApi);
@@ -73,7 +73,8 @@ namespace Sextant.Tests
                 new[]
                 {
                     Environment.NewLine
-                }, StringSplitOptions.RemoveEmptyEntries)
+                },
+                StringSplitOptions.RemoveEmptyEntries)
                     .Where(l =>
                     !l.StartsWith("[assembly: AssemblyVersion(", StringComparison.InvariantCulture) &&
                     !l.StartsWith("[assembly: AssemblyFileVersion(", StringComparison.InvariantCulture) &&
